@@ -9,8 +9,12 @@ const NxtSlidesItem = props => {
   const backColor = isActive ? 'blue' : ''
 
   return (
-    <li onClick={onClickTab} className={`list ${backColor}`}>
-      <p className='count'>{index + 1}</p>
+    <li
+      onClick={onClickTab}
+      className={`list ${backColor}`}
+      testid={`slideTab${index + 1}`}
+    >
+      <p className="count">{index + 1}</p>
       <p className="item-heading">{heading}</p>
       <p className="item-description">{description}</p>
     </li>

@@ -68,7 +68,7 @@ class NxtSlides extends Component {
   }
 
   onChangeDescription = event => {
-   const {activeTabId, slideData} = this.state
+    const {activeTabId, slideData} = this.state
     const updatedSlides = slideData.map(each => {
       if (each.id === activeTabId) {
         return {...each, description: event.target.value}
@@ -95,21 +95,30 @@ class NxtSlides extends Component {
   }
 
   AddTab = () => {
+    const {slideData, activeTabId} = this.state
+    const activeIndex = slideData.findIndex(each => each.id === activeTabId)
     const newTab = {
       id: uuidv4(),
       heading: 'Heading',
       description: 'Description',
     }
-    this.setState(prevState => ({
-      slideData: [...prevState.slideData, newTab],
-       showHeading: true,
-       showDescription: true,
-    }))
+    const updatedSlides = [
+      ...slideData.slice(0, activeIndex + 1),
+      newTab,
+      ...slideData.slice(activeIndex + 1),
+    ]
+    this.setState({
+      slideData: updatedSlides,
+      activeTabId: newTab.id,
+      showHeading: true,
+      showDescription: true,
+    })
   }
 
   render() {
     const {slideData, activeTabId, showHeading, showDescription} = this.state
-    const activeHeading = slideData.find(each => each.id === activeTabId).heading
+    const activeHeading = slideData.find(each => each.id === activeTabId)
+      .heading
     const activeDescription = slideData.find(each => each.id === activeTabId)
       .description
     return (
@@ -132,17 +141,17 @@ class NxtSlides extends Component {
             <p className="new-text">New</p>
           </button>
           <div className="slide-tab-container">
-            <div className="tabs" testid="slide">
+            <ol className="tabs">
               {slideData.map((each, index) => (
                 <NxtSlidesItem
                   key={each.id}
                   item={each}
-                  index = {index}
+                  index={index}
                   onclickTabBtn={this.onclickTabBtn}
                   isActive={activeTabId === each.id}
                 />
               ))}
-            </div>
+            </ol>
             <div className="slide-container" testid="slide">
               {!showHeading ? (
                 <input
@@ -152,13 +161,9 @@ class NxtSlides extends Component {
                   value={activeHeading}
                 />
               ) : (
-                <button
-                  type="button"
-                  className="heading-button"
-                  onClick={this.onClickHeading}
-                >
+                <h1 className="heading-button" onClick={this.onClickHeading}>
                   {activeHeading}
-                </button>
+                </h1>
               )}
               {!showDescription ? (
                 <input
@@ -168,13 +173,12 @@ class NxtSlides extends Component {
                   value={activeDescription}
                 />
               ) : (
-                <button
-                  type="button"
+                <p
                   className="description-btn"
                   onClick={this.onClickDescription}
                 >
                   {activeDescription}
-                </button>
+                </p>
               )}
             </div>
           </div>
